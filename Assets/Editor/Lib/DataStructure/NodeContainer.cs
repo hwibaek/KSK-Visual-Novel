@@ -28,8 +28,7 @@ public class NodeContainer : ScriptableObject
             EditorWindow.FocusWindowIfItsOpen<DialogTreeEditor>();
             dte = EditorWindow.GetWindow<DialogTreeEditor>();
             var str = AssetDatabase.GetAssetPath(instanceID);
-            if (dte.DialogGraphView.Current == AssetDatabase.LoadAssetAtPath<NodeContainer>(str) || 
-                dte.DialogGraphView.Current == null)
+            if (dte.DialogGraphView.Current == null || dte.IsSaved)
             {
                 dte.RequestDataOperation(false, str);
                 return false;
