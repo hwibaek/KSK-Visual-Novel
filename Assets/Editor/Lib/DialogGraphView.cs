@@ -9,8 +9,10 @@ using UnityEngine.UIElements;
 public class DialogGraphView : GraphView
 {
     public Blackboard Blackboard;
+    public NodeContainer Current;
     private NodeSearchWindow _search;
     public List<ExportedProperty> ExportedProperties = new();
+    
     public DialogGraphView(EditorWindow window)
     {
         AddGrid();
@@ -70,13 +72,13 @@ public class DialogGraphView : GraphView
 
     public void CreateNode(string nodeName, Vector2 pos)
     {
-        AddElement(CreateNodeElement(nodeName, nodeName, pos));
+        AddElement(CreateNodeElement(nodeName, nodeName, string.Empty, pos));
     }
-    public NodeElement CreateNodeElement(string nodeName, string dText, Vector2 pos)
+    public NodeElement CreateNodeElement(string nodeTitle, string dText, string dialog, Vector2 pos)
     {
         var node = new NodeElement
         {
-            title = nodeName,
+            title = nodeTitle,
             DialogText = dText,
             Guid = GUID.Generate().ToString()
         };
@@ -87,10 +89,13 @@ public class DialogGraphView : GraphView
         var btn = new Button(() => AddChoicePort(node)) { text = "new Choice" };
         node.titleContainer.Add(btn);
 
-        var textField = new TextField(string.Empty);
+        var textField = new TextField(string.Empty)
+        {
+            value = dialog
+        };
         textField.RegisterValueChangedCallback(evt =>
         {
-            node.DialogText = node.title = evt.newValue;
+            node.DialogText = evt.newValue;
         });
         node.mainContainer.Add(textField);
         
@@ -164,7 +169,6 @@ public class DialogGraphView : GraphView
         var localValue = p.propertyValue;
         while (ExportedProperties.Any(x => x.propertyName == localName))
         {
-            Debug.Log($"");
             localName = $"{localName}(1)";
         }
         var property = new ExportedProperty
@@ -173,28 +177,13 @@ public class DialogGraphView : GraphView
             propertyValue = localValue
         };
         ExportedProperties.Add(property);
-
-        var container = new VisualElement();
+        
         var bbField = new BlackboardField
         {
             text = property.propertyName,
             typeText = "string property"
         };
-        container.Add(bbField);
-
-        var propertyValueField = new TextField("Value :")
-        {
-            value = property.propertyValue
-        };
-        propertyValueField.RegisterValueChangedCallback(evt =>
-        {
-            var index = ExportedProperties.FindIndex(x => x.propertyName == property.propertyName);
-            ExportedProperties[index].propertyValue = evt.newValue;
-        });
         
-        var bbFieldRow = new BlackboardRow(bbField, propertyValueField);
-        container.Add(bbFieldRow);
-        
-        Blackboard.Add(container);
+        Blackboard.Add(bbField);
     }
 }

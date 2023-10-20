@@ -4,7 +4,8 @@ using UnityEngine;
 [Serializable]
 public class NodeData
 {
-    public string text;
-    public string guid;
-    public Rect pos;
+    public string title;
+    [HideInInspector] public string guid;
+    public string value;
+    [HideInInspector] public Rect pos;
 }

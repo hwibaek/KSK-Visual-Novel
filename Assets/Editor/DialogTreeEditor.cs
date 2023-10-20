@@ -7,75 +7,72 @@ using UnityEngine.UIElements;
 
 public class DialogTreeEditor : EditorWindow
 {
-    private DialogGraphView _dialogGraphView;
-    private string _fileName = "new Tree";
-    
-    [MenuItem("DialogTreeEditor/Editor...")]
-    public static void ShowWindow()
-    {
-        var wnd = GetWindow<DialogTreeEditor>();
-        wnd.titleContent = new GUIContent("DialogTreeEditor");
-    }
+    public DialogGraphView DialogGraphView;
+    public string currentTreeName = "DialogTreeEditor";
 
+    private bool _isSaved = true;
+
+    public bool IsSaved
+    {
+        get => _isSaved;
+        set
+        {
+            _isSaved = value;
+            titleContent.text = value ? currentTreeName : $"{currentTreeName}*";
+        }
+    }
     public void CreateGUI()
     {
         CreateGraphView();
         CreateToolbar();
         CreateBlackBoard();
+        titleContent.text = currentTreeName;
+        
     }
-
     private void CreateBlackBoard()
     {
-        var blackBoard = new Blackboard(_dialogGraphView);
+        var blackBoard = new Blackboard(DialogGraphView);
         blackBoard.Add(new BlackboardSection {title = "Exposed Properties"});
         blackBoard.addItemRequested = board =>
         {
-            Debug.Log("생성");
-            _dialogGraphView.AddPropertyToBlackBoard(new ExportedProperty());
+            DialogGraphView.AddPropertyToBlackBoard(new ExportedProperty());
         };
         blackBoard.editTextRequested = (bb, e, arg) =>
         {
             var old = ((BlackboardField)e).text;
             
-            if (_dialogGraphView.ExportedProperties.Any(x => x.propertyName == arg))
+            if (DialogGraphView.ExportedProperties.Any(x => x.propertyName == arg))
             {
                 EditorUtility.DisplayDialog("에러", "이미 해당 이름을 갖고있는 프로퍼티가 있습니다.", "확인");
                 return;
             }
             
-            var index = _dialogGraphView.ExportedProperties.FindIndex(x => x.propertyName == old);
-            Debug.Log($"old : {old}");
-            foreach (var ep in _dialogGraphView.ExportedProperties)
-            {
-                Debug.Log($"ep : {ep.propertyName}");
-            }
-            Debug.Log($"index : {index}, all : {_dialogGraphView.ExportedProperties.Count}");
-            _dialogGraphView.ExportedProperties[index].propertyName = arg;
+            var index = DialogGraphView.ExportedProperties.FindIndex(x => x.propertyName == old);
+            DialogGraphView.ExportedProperties[index].propertyName = arg;
             ((BlackboardField)e).text = arg;
         };
         blackBoard.SetPosition(new Rect(10, 30, 200, 300));
-        _dialogGraphView.Add(blackBoard);
-        _dialogGraphView.Blackboard = blackBoard;
+        DialogGraphView.Add(blackBoard);
+        DialogGraphView.Blackboard = blackBoard;
     }
     private void CreateGraphView()
     {
-        _dialogGraphView = new DialogGraphView(this)
+        DialogGraphView = new DialogGraphView(this)
         {
-            name = "DialogGraphView"
+            name = "DialogGraphView",
+            graphViewChanged = OnGraphChange
         };
-        _dialogGraphView.StretchToParentSize();
-        rootVisualElement.Add(_dialogGraphView);
+        DialogGraphView.StretchToParentSize();
+        rootVisualElement.Add(DialogGraphView);
     }
-
+    private GraphViewChange OnGraphChange(GraphViewChange change)
+    {
+        IsSaved = change.edgesToCreate == null && change.elementsToRemove == null && change.movedElements == null;
+        return change;
+    }
     private void CreateToolbar()
     {
         var toolbar = new Toolbar();
-
-        var textField = new TextField("File Name :");
-        textField.SetValueWithoutNotify("new Tree");
-        textField.MarkDirtyRepaint();
-        textField.RegisterValueChangedCallback(evt => _fileName = evt.newValue);
-        toolbar.Add(textField);
 
         var saveBtn = new Button(() => RequestDataOperation(true)) {text = "save tree"};
         var loadBtn = new Button(() => RequestDataOperation(false)) {text = "load tree"};
@@ -84,23 +81,19 @@ public class DialogTreeEditor : EditorWindow
         
         rootVisualElement.Add(toolbar);
     }
-
-    private void RequestDataOperation(bool isSave)
+    
+    public void RequestDataOperation(bool isSave, string path = "")
     {
-        if (string.IsNullOrEmpty(_fileName))
-        {
-            EditorUtility.DisplayDialog("파일 이름 없음", "파일 이름을 입력하세요.", "확인");
-            return;
-        }
-
-        var saveUtil = TreeSaveUtil.Get(_dialogGraphView);
+        var saveUtil = TreeSaveUtil.Get(DialogGraphView);
         if (isSave)
         {
-            saveUtil.SaveTree(_fileName);
+            var isSaved = saveUtil.SaveTree(string.IsNullOrEmpty(path) ? EditorUtility.SaveFilePanel("Save Tree", "Assets/", "new Tree", "asset") : path);
+            if (isSaved) IsSaved = true;
         }
         else
         {
-            saveUtil.LoadTree(_fileName);
+            var isLoaded = saveUtil.LoadTree(string.IsNullOrEmpty(path) ? EditorUtility.OpenFilePanel("Load Tree", "Assets/", "asset") : path);
+            if (isLoaded) IsSaved = true;
         }
     }
 }

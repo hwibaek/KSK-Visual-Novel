@@ -41,7 +41,7 @@ public class TreeSaveUtil
         {
             guid = entry.Guid,
             pos = entry.GetPosition(),
-            text = entry.DialogText
+            title = "대화 노드"
         };
         foreach (var node in Nodes.Where(node => !node.IsEntry))
         {
@@ -49,7 +49,8 @@ public class TreeSaveUtil
             {
                 guid = node.Guid,
                 pos = node.GetPosition(),
-                text = node.DialogText
+                title = "대화 노드",
+                value = node.DialogText
             });
         }
 
@@ -60,32 +61,73 @@ public class TreeSaveUtil
     {
         container.nodePropertyData.AddRange(_view.ExportedProperties);
     }
-    public void SaveTree(string fileName)
+    public bool SaveTree(string filePath)
     {
+        if (string.IsNullOrEmpty(filePath)) return false;
+        if (!filePath.Contains("Assets/"))
+        {
+            EditorUtility.DisplayDialog("경로 에러", "불러올 모든 파일은 에셋 폴더 안에 있어야합니다!", "확인");
+            return false;
+        }
+
+        var folders = filePath.Split('/');
+        var finalPath = "";
+        foreach (var str in folders)
+        {
+            if (string.IsNullOrEmpty(finalPath) && str != "Assets")
+            {
+                continue;
+            }
+
+            finalPath = $"{finalPath}/{str}";
+        }
+
+        if (finalPath[0].Equals('/')) finalPath = finalPath.Remove(0, 1);
         var container = ScriptableObject.CreateInstance<NodeContainer>();
-        if (!SaveNodes(container)) return;   
+        if (!SaveNodes(container)) return false;   
 
         SaveProperties(container);
         
-        if (!AssetDatabase.IsValidFolder("Assets/Resources")) AssetDatabase.CreateFolder("Assets", "Resources");
-        
-        AssetDatabase.CreateAsset(container, $"Assets/Resources/{fileName}.asset");
+        AssetDatabase.CreateAsset(container, finalPath);
         AssetDatabase.SaveAssets();
+        return true;
     }
 
-    public void LoadTree(string fileName)
+    public bool LoadTree(string filePath)
     {
-        _cache = Resources.Load<NodeContainer>(fileName);
+        if (string.IsNullOrEmpty(filePath)) return false;
+        if (!filePath.Contains("Assets/"))
+        {
+            EditorUtility.DisplayDialog("경로 에러", "불러올 모든 파일은 에셋 폴더 안에 있어야합니다!", "확인");
+            return false;
+        }
+
+        var folders = filePath.Split('/');
+        var finalPath = "";
+        foreach (var str in folders)
+        {
+            if (string.IsNullOrEmpty(finalPath) && str != "Assets")
+            {
+                continue;
+            }
+
+            finalPath = $"{finalPath}/{str}";
+        }
+
+        if (finalPath[0].Equals('/')) finalPath = finalPath.Remove(0, 1);
+        _cache = AssetDatabase.LoadAssetAtPath<NodeContainer>(finalPath);
         if (_cache == null)
         {
             EditorUtility.DisplayDialog("파일 없음", "파일이 존재하지 않습니다!", "확인");
-            return;
+            return false;
         }
         
         ClearGraph();
         CreateNodes();
         ConnectNodes();
         CreateProperties();
+        _view.Current = _cache;
+        return true;
     }
 
     private void CreateProperties()
@@ -112,8 +154,9 @@ public class TreeSaveUtil
     {
         foreach (var node in _cache.nodeData)
         {
-            var temp = _view.CreateNodeElement(node.text, node.text, Vector2.zero);
+            var temp = _view.CreateNodeElement(node.title, node.title, node.value, Vector2.zero);
             temp.Guid = node.guid;
+            temp.DialogText = node.value;
             _view.AddElement(temp);
 
             var ports = _cache.nodeLinkData.Where(x => x.baseGuid == node.guid).ToList();

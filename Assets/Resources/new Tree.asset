@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: new Tree
   m_EditorClassIdentifier: 
   entryNode:
-    text: ENTRYPOINT
+    title: "\uB300\uD654 \uB178\uB4DC"
     guid: 530d8427d74441a47ba0726d64c14410
+    value: 
     pos:
       serializedVersion: 2
       x: 100
@@ -22,38 +23,51 @@ MonoBehaviour:
       width: 72
       height: 76.8
   nodeData:
-  - text: Dialog Node
+  - title: "\uB300\uD654 \uB178\uB4DC"
     guid: 821c3ec4b1aa92a4b9df0c75b2641954
+    value: "\uC548\uB155, \uC138\uACC4!"
     pos:
       serializedVersion: 2
       x: 172
       y: 200
-      width: 200.79999
-      height: 142.40001
-  - text: Dialog Node
-    guid: 99d74a9ad3e559440beeb4f6410d33df
-    pos:
-      serializedVersion: 2
-      x: 372.8
-      y: 105.600006
-      width: 200.79999
-      height: 94.4
-  - text: Dialog Node
-    guid: 0f6d36858ef59484b8016affffe97022
-    pos:
-      serializedVersion: 2
-      x: 372.8
-      y: 200
-      width: 200.79999
-      height: 94.40001
-  - text: Dialog Node
+      width: 183.20001
+      height: 143.99998
+  - title: "\uB300\uD654 \uB178\uB4DC"
     guid: fa85fcaec167bd441acca78e5e905206
+    value: "\uC798 \uAC00\uC694"
     pos:
       serializedVersion: 2
       x: 372.8
       y: 294.40002
-      width: 200.79999
-      height: 94.399994
+      width: 183.20001
+      height: 96
+  - title: "\uB300\uD654 \uB178\uB4DC"
+    guid: 99d74a9ad3e559440beeb4f6410d33df
+    value: "\uADF8\uB798 \uC548\uB155"
+    pos:
+      serializedVersion: 2
+      x: 372.8
+      y: 105.600006
+      width: 183.20001
+      height: 95.99999
+  - title: "\uB300\uD654 \uB178\uB4DC"
+    guid: 0f6d36858ef59484b8016affffe97022
+    value: "\uBC18\uAC00\uC6CC\uC694"
+    pos:
+      serializedVersion: 2
+      x: 372.8
+      y: 200
+      width: 183.20001
+      height: 95.999985
+  - title: "\uB300\uD654 \uB178\uB4DC"
+    guid: b0941e104edcd2a4b99579320fbac478
+    value: "\u3160"
+    pos:
+      serializedVersion: 2
+      x: 556
+      y: 294.40002
+      width: 183.20001
+      height: 96
   nodeLinkData:
   - portName: Next
     baseGuid: 530d8427d74441a47ba0726d64c14410
@@ -67,10 +81,7 @@ MonoBehaviour:
   - portName: Bye
     baseGuid: 821c3ec4b1aa92a4b9df0c75b2641954
     targetGuid: fa85fcaec167bd441acca78e5e905206
-  nodePropertyData:
-  - propertyName: new string
-    propertyValue: new value
-  - propertyName: new string(1)
-    propertyValue: new value
-  - propertyName: new string(1)(1)
-    propertyValue: new value
+  - portName: Choice 0
+    baseGuid: fa85fcaec167bd441acca78e5e905206
+    targetGuid: b0941e104edcd2a4b99579320fbac478
+  nodePropertyData: []
