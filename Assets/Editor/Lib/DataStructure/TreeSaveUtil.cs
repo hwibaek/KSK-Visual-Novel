@@ -41,7 +41,7 @@ public class TreeSaveUtil
         {
             guid = entry.Guid,
             pos = entry.GetPosition(),
-            title = "대화 노드"
+            title = "시작 노드"
         };
         foreach (var node in Nodes.Where(node => !node.IsEntry))
         {
@@ -127,6 +127,7 @@ public class TreeSaveUtil
         ConnectNodes();
         CreateProperties();
         _view.Current = _cache;
+        _view.CurrentPath = filePath;
         return true;
     }
 

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: new Tree
   m_EditorClassIdentifier: 
   entryNode:
-    title: "\uB300\uD654 \uB178\uB4DC"
+    title: "\uC2DC\uC791 \uB178\uB4DC"
     guid: 530d8427d74441a47ba0726d64c14410
     value: 
     pos:
@@ -25,63 +25,39 @@ MonoBehaviour:
   nodeData:
   - title: "\uB300\uD654 \uB178\uB4DC"
     guid: 821c3ec4b1aa92a4b9df0c75b2641954
-    value: "\uC548\uB155, \uC138\uACC4!"
+    value: Hello, World!
     pos:
       serializedVersion: 2
       x: 172
       y: 200
       width: 183.20001
-      height: 143.99998
+      height: 94.40001
   - title: "\uB300\uD654 \uB178\uB4DC"
-    guid: fa85fcaec167bd441acca78e5e905206
-    value: "\uC798 \uAC00\uC694"
+    guid: bddb5156db5cf5740958e96c037bca4c
+    value: "\uC548\uB155"
     pos:
       serializedVersion: 2
-      x: 372.8
-      y: 294.40002
-      width: 183.20001
-      height: 96
-  - title: "\uB300\uD654 \uB178\uB4DC"
-    guid: 99d74a9ad3e559440beeb4f6410d33df
-    value: "\uADF8\uB798 \uC548\uB155"
-    pos:
-      serializedVersion: 2
-      x: 372.8
-      y: 105.600006
-      width: 183.20001
-      height: 95.99999
-  - title: "\uB300\uD654 \uB178\uB4DC"
-    guid: 0f6d36858ef59484b8016affffe97022
-    value: "\uBC18\uAC00\uC6CC\uC694"
-    pos:
-      serializedVersion: 2
-      x: 372.8
+      x: 355.2
       y: 200
       width: 183.20001
-      height: 95.999985
+      height: 119.999985
   - title: "\uB300\uD654 \uB178\uB4DC"
-    guid: b0941e104edcd2a4b99579320fbac478
-    value: "\u3160"
+    guid: a64f35d806c0b004291afdef45387c3b
+    value: "\uC138\uACC4"
     pos:
       serializedVersion: 2
-      x: 556
-      y: 294.40002
-      width: 183.20001
-      height: 96
+      x: 538.4
+      y: 200
+      width: 183.19995
+      height: 95.999985
   nodeLinkData:
   - portName: Next
     baseGuid: 530d8427d74441a47ba0726d64c14410
     targetGuid: 821c3ec4b1aa92a4b9df0c75b2641954
-  - portName: Hi
-    baseGuid: 821c3ec4b1aa92a4b9df0c75b2641954
-    targetGuid: 99d74a9ad3e559440beeb4f6410d33df
-  - portName: Hello
-    baseGuid: 821c3ec4b1aa92a4b9df0c75b2641954
-    targetGuid: 0f6d36858ef59484b8016affffe97022
-  - portName: Bye
-    baseGuid: 821c3ec4b1aa92a4b9df0c75b2641954
-    targetGuid: fa85fcaec167bd441acca78e5e905206
   - portName: Choice 0
-    baseGuid: fa85fcaec167bd441acca78e5e905206
-    targetGuid: b0941e104edcd2a4b99579320fbac478
+    baseGuid: 821c3ec4b1aa92a4b9df0c75b2641954
+    targetGuid: bddb5156db5cf5740958e96c037bca4c
+  - portName: Choice 0
+    baseGuid: bddb5156db5cf5740958e96c037bca4c
+    targetGuid: a64f35d806c0b004291afdef45387c3b
   nodePropertyData: []

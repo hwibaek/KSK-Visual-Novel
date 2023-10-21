@@ -8,13 +8,16 @@ using UnityEngine.UIElements;
 
 public class DialogGraphView : GraphView
 {
+    public DialogTreeEditor Editor;
     public Blackboard Blackboard;
     public NodeContainer Current;
+    public string CurrentPath;
     private NodeSearchWindow _search;
     public List<ExportedProperty> ExportedProperties = new();
     
-    public DialogGraphView(EditorWindow window)
+    public DialogGraphView(DialogTreeEditor window)
     {
+        Editor = window;
         AddGrid();
         AddPermissions();
         AddElement(GenerateEntryNode());
@@ -96,6 +99,7 @@ public class DialogGraphView : GraphView
         textField.RegisterValueChangedCallback(evt =>
         {
             node.DialogText = evt.newValue;
+            Editor.IsSaved = false;
         });
         node.mainContainer.Add(textField);
         
@@ -114,7 +118,7 @@ public class DialogGraphView : GraphView
         return compatiblePorts;
     }
 
-    public void AddChoicePort(NodeElement element, string overridePortName = "", bool isEntry = false)
+    public void AddChoicePort(NodeElement element, string overridePortName = "")
     {
         var generatedPort = GeneratePort(element, Direction.Output, Port.Capacity.Single, typeof(bool));
         
@@ -129,7 +133,11 @@ public class DialogGraphView : GraphView
             name = string.Empty,
             value = outPortName
         };
-        textField.RegisterValueChangedCallback(evt => generatedPort.portName = evt.newValue);
+        textField.RegisterValueChangedCallback(evt =>
+        {
+            generatedPort.portName = evt.newValue;
+            Editor.IsSaved = false;
+        });
         textField.RemoveFromClassList("unity-base-field");
         
         var deleteBtn = new Button(() => RemovePort(element, generatedPort))
@@ -142,6 +150,7 @@ public class DialogGraphView : GraphView
         
         element.outputContainer.Add(generatedPort);
         UpdateNode(element);
+        Editor.IsSaved = false;
     }
 
     private void RemovePort(NodeElement element, Port gPort)
@@ -156,6 +165,8 @@ public class DialogGraphView : GraphView
         var edge = target.First();
         edge.input.DisconnectAll();
         RemoveElement(edge);
+        UpdateNode(element);
+        Editor.IsSaved = false;
     }
 
     public void ClearBBandEp()

@@ -11,6 +11,7 @@ public class DialogTreeEditor : EditorWindow
     public string currentTreeName = "DialogTreeEditor";
 
     private bool _isSaved = true;
+    private bool _isAutoSave;
 
     public bool IsSaved
     {
@@ -18,7 +19,11 @@ public class DialogTreeEditor : EditorWindow
         set
         {
             _isSaved = value;
-            titleContent.text = value ? currentTreeName : $"{currentTreeName}*";
+            titleContent.text = IsSaved ? currentTreeName : $"{currentTreeName}*";
+            if (_isAutoSave && !IsSaved)
+            {
+                RequestDataOperation(true, DialogGraphView.CurrentPath);
+            }
         }
     }
     public void CreateGUI()
@@ -74,10 +79,15 @@ public class DialogTreeEditor : EditorWindow
     {
         var toolbar = new Toolbar();
 
-        var saveBtn = new Button(() => RequestDataOperation(true)) {text = "save tree"};
-        var loadBtn = new Button(() => RequestDataOperation(false)) {text = "load tree"};
+        var saveBtn = new Button(() => RequestDataOperation(true, DialogGraphView.CurrentPath)) { text = "save tree" };
+        var saveAtBtn = new Button(() => RequestDataOperation(true)) { text = "save at..." };
+        var loadBtn = new Button(() => RequestDataOperation(false)) { text = "load tree..." };
+        var autoSaveToggle = new Toggle("auto save");
+        autoSaveToggle.RegisterValueChangedCallback(evt => _isAutoSave = evt.newValue);
         toolbar.Add(saveBtn);
+        toolbar.Add(saveAtBtn);
         toolbar.Add(loadBtn);
+        toolbar.Add(autoSaveToggle);
         
         rootVisualElement.Add(toolbar);
     }
